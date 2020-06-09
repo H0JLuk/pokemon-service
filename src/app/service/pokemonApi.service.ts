@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../environments/environment';
-import { take, map } from 'rxjs/operators';
+import { take, map, filter } from 'rxjs/operators';
 
 @Injectable()
 export class PokemonApiService {
@@ -25,10 +25,10 @@ export class PokemonApiService {
       );
   }
 
-  getAbilitiesDescr(url: string): Observable<object> {
+  getAbilitiesDescr(url: string): Observable<object[]> {
     return this.http.get(url)
       .pipe(
-        // map(item => item)
+        map(item => item['effect_entries'])
       )
   }
 

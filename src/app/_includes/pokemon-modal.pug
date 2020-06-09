@@ -1,0 +1,11 @@
+.modal-border
+  .pok_photo
+    .btn.btn-close('(click)'="toggleModal()")
+    img([src]="pokemonService.getPhotoUrl(selectedPokemon.id)")
+  .pok-content_name {{ selectedPokemon.name }}
+  .pok-content_number \#{{ selectedPokemon.id+1 }}
+  ul.pok-content_list(*ngIf="selectedPokemon.abilities")
+    li.ability(*ngFor="let ability of selectedPokemon.abilities") 
+      | {{ ability.name }}
+      ul.ability-descr(*ngIf="pokemonsAbilities")
+        li {{ pokemonsAbilities[ability.url] }}

@@ -49,7 +49,7 @@ export class AppComponent {
       JSON.parse(localStorage.getItem('pokemonsList')) || [];
 
     localPokemonsList.length > LENGTH + 20
-      ? (this.listPokemons = localPokemonsList.slice(0, LENGTH + 19))
+      ? (this.listPokemons = localPokemonsList.slice(0, LENGTH + 20))
       : this.setPokemonsData(LENGTH);
   }
 
@@ -98,8 +98,8 @@ export class AppComponent {
         )
         .subscribe((data) => {
           console.log('ability request');
-          
-          data = data['effect_entries']
+
+          data = data
             .filter((elem) => elem['language']['name'] === 'en')
             .map((elem) => elem['effect'])[0];
           this.pokemonsAbilities[item.url] = data;

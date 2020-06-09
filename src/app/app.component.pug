@@ -1,27 +1,10 @@
 .wrapper
   .inner
     .pokemon-list
-      .pokemon-item(*ngFor="let pokemon of listPokemons; let index = index", '(click)'="toggleModal(index)")
-        .pok_photo
-          img([src]="pokemonService.getPhotoUrl(index)", alt="Pokemon photo")
-        .pok_content
-          .pok-content_name {{ pokemon.name }}
-          .pok-content_number \#{{ index+1 }}
-          ul.pok-content_list(*ngIf='pokemon.abilities')
-            li.ability(*ngFor="let ability of pokemon.abilities") {{ ability.name }}
+      include ./_includes/pokemon-item.pug
 
   .pok_modal(*ngIf='showModalPokemon')
     .blur('(click)'="toggleModal()")
     .modal_inner
-      .modal-border
-        .pok_photo
-          .btn.btn-close('(click)'="toggleModal()")
-          img([src]="pokemonService.getPhotoUrl(selectedPokemon.id)")
-        .pok-content_name {{ selectedPokemon.name }}
-        .pok-content_number \#{{ selectedPokemon.id+1 }}
-        ul.pok-content_list(*ngIf="selectedPokemon.abilities")
-          li.ability(*ngFor="let ability of selectedPokemon.abilities") 
-            | {{ ability.name }}
-            ul.ability-descr(*ngIf="pokemonsAbilities")
-              li {{ pokemonsAbilities[ability.url] }}
+      include ./_includes/pokemon-modal.pug
   .btn.btn-show('(click)'="showMorePokemons()") Show more...

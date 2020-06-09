@@ -120,6 +120,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow-y: auto;
+      max-height: 100vh;
 
       .pok_photo {
         margin: 0 0 25px 0;
