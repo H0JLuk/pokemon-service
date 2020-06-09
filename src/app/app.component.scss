@@ -18,6 +18,36 @@
   width: 93%;
   min-width: calc(100% - 32px); // как-раз под 320px
   @include flex-center;
+  flex-direction: column;
+
+  .search {
+    width: 200px;
+    position: relative;
+    margin-top: 20px;  
+
+    input[id="name"] {
+      display: block;
+      width: 100%;
+      border-radius: 0;
+      color: #5a5a5a;
+      background: transparent;
+      font-size: 18px;
+      padding: 10px;
+
+      &:valid {
+        ~.bar {
+          background-color: #30ad3a;
+        }
+      }
+    }
+
+    .bar {
+      width: 100%;
+      height: 6px;
+      background-color: #524e4e;
+      transition: 0.4s ease;
+    }
+  }
 
   .pokemon-list {
     @include flex-center;
@@ -140,8 +170,9 @@
             display: block;
           }
 
-          &::before, &::after {
-            content: '';
+          &::before,
+          &::after {
+            content: "";
             position: absolute;
             top: 0;
             right: 10px;

@@ -1,5 +1,11 @@
 .wrapper
   .inner
+    .search
+      input(
+        '[(ngModel)]'="findingWord", id="name", required, maxlength="20",
+        autocomplete="off", placeholder="Pokemon"
+      )
+      .bar
     .pokemon-list
       include ./_includes/pokemon-item.pug
 

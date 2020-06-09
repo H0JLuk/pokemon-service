@@ -10,8 +10,11 @@
 body {
   font-family: sans-serif;
   color: $text-color;
+  background-color: $main-bg;
 }
 
-.btn {
+input, .btn {
   cursor: pointer;
+  border: none;
+  outline: none;
 }

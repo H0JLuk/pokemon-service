@@ -1,4 +1,4 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, Input } from '@angular/core';
 import { PokemonApiService } from './service/pokemonApi.service';
 import { map, finalize } from 'rxjs/operators';
 import { ThrowStmt } from '@angular/compiler';
@@ -14,6 +14,7 @@ export class AppComponent {
   listPokemons: any[] = [];
   selectedPokemon: any;
   pokemonsAbilities: object;
+  @Input() findingWord: string;
 
   constructor(
     public pokemonService: PokemonApiService,

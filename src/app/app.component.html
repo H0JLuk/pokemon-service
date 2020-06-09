@@ -1,6 +1,10 @@
 
 <div class="wrapper">
   <div class="inner">
+    <div class="search">
+      <input [(ngModel)]="findingWord" id="name" required="required" maxlength="20" autocomplete="off" placeholder="Pokemon"/>
+      <div class="bar"></div>
+    </div>
     <div class="pokemon-list">
       <div class="pokemon-item" *ngFor="let pokemon of listPokemons; let index = index" (click)="toggleModal(index)">
         <div class="pok_photo"><img [src]="pokemonService.getPhotoUrl(index)" alt="Pokemon photo"/></div>
