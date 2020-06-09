@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "pokemon-service"
+    }
+  },
+  "defaultProject": "pokemon-service",
+  "cli": {
+    "analytics": false
+  }
 }

@@ -1,0 +1,8 @@
+$pokemon-bg: #ccceca;
+$text-color: #000;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
