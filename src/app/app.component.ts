@@ -44,11 +44,38 @@ export class AppComponent {
     private renderer: Renderer2,
     @Self() private ngOnDestroy$: NgOnDestroy
   ) {
-    // localStorage.clear();
-    this.setFullPokemonsList();
+    this.firstLoading();
 
     this.pokemonsAbilities =
       JSON.parse(localStorage.getItem('pokemonsAbilities')) || {};
+  }
+
+  private firstLoading(): void {
+    if (localStorage.getItem('allPokemons')) {
+      this.listAllPokemons = JSON.parse(localStorage.getItem('allPokemons'));
+      this.findPokemons();
+    }else {
+      console.log('Pokemon list request');
+
+      let id: number = 1;
+      const sub$ = this.pokemonService
+        .getListPokemonsData(0, 20)
+        .pipe(
+          finalize(() => sub$.unsubscribe()),
+          takeUntil(this.ngOnDestroy$)
+        )
+        .subscribe(
+          (data) => {
+            this.listAllPokemons = data.map((pokemon) => {
+              pokemon.id = id++;
+              return pokemon;
+            })
+          }
+        )
+        .add(() =>
+          this.setFullPokemonsList()
+        );
+    }
   }
 
   private setFullPokemonsList(): void {
@@ -59,18 +86,20 @@ export class AppComponent {
       console.log('Pokemon list request');
 
       let id: number = 1;
-      this.pokemonService
+      const sub$ = this.pokemonService
         .getListPokemonsData(0, 1000)
         .pipe(
           finalize(() => this.findPokemons()),
           takeUntil(this.ngOnDestroy$)
         )
         .subscribe(
-          (data) =>
-            (this.listAllPokemons = data.map((pokemon) => {
+          (data) => {
+            this.listAllPokemons = data.map((pokemon) => {
               pokemon.id = id++;
               return pokemon;
-            }))
+            })
+            sub$.unsubscribe();
+          }
         )
         .add(() =>
           localStorage.setItem(
@@ -95,10 +124,13 @@ export class AppComponent {
         return pokemon;
       }
 
-      this.pokemonService
+      const sub$ = this.pokemonService
         .getDetailedPokemonData(pokemon.url)
         .pipe(
-          finalize(() => this.saveDataInStorage()),
+          finalize(() => {
+            this.saveDataInStorage();
+            sub$.unsubscribe();
+          }),
           takeUntil(this.ngOnDestroy$)
         )
         .subscribe(
@@ -151,15 +183,16 @@ export class AppComponent {
       if (this.pokemonsAbilities[ability.url]) {
         return;
       }
-      this.pokemonService
+      const sub$ = this.pokemonService
         .getAbilitiesDescr(ability.url)
         .pipe(
-          finalize(() =>
+          finalize(() => {
             localStorage.setItem(
               'pokemonsAbilities',
               JSON.stringify(this.pokemonsAbilities)
-            )
-          ),
+            );
+            sub$.unsubscribe();
+          }),
           takeUntil(this.ngOnDestroy$)
         )
         .subscribe(
