@@ -2,7 +2,7 @@
   .inner
     .search
       input(
-        '[(ngModel)]'="findingWord", id="name", maxlength="20",
+        '[(ngModel)]'="findingWord", '(input)'="findPokemons()", id="name", maxlength="20",
         autocomplete="off", placeholder="Pokemon"
       )
       .bar([class]="findingWord ? 'ok' : ''")

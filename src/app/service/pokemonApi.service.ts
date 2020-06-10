@@ -9,8 +9,8 @@ import { take, map, filter } from 'rxjs/operators';
 export class PokemonApiService {
   constructor(private http: HttpClient) { }
 
-  getListPokemonsData(count: number = 20): Observable<object[]> {
-    return this.http.get(`${environment.mainDataApi}?limit=20&offset=${count}`)
+  getListPokemonsData(count: number = 20, limit: number = 20): Observable<any[]> {
+    return this.http.get(`${environment.mainDataApi}?limit=${limit}&offset=${count}`)
       .pipe(
         take(1),
         map(item => item['results'])
@@ -28,6 +28,7 @@ export class PokemonApiService {
   getAbilitiesDescr(url: string): Observable<object[]> {
     return this.http.get(url)
       .pipe(
+        take(1),
         map(item => item['effect_entries'])
       )
   }

@@ -2,7 +2,7 @@
 <div class="wrapper">
   <div class="inner">
     <div class="search">
-      <input [(ngModel)]="findingWord" id="name" maxlength="20" autocomplete="off" placeholder="Pokemon"/>
+      <input [(ngModel)]="findingWord" (input)="findPokemons()" id="name" maxlength="20" autocomplete="off" placeholder="Pokemon"/>
       <div class="bar" [class]="findingWord ? 'ok' : ''"></div>
     </div>
     <div class="pokemon-list">
