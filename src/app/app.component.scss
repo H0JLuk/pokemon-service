@@ -33,12 +33,6 @@
       background: transparent;
       font-size: 18px;
       padding: 10px;
-
-      &:valid {
-        ~.bar {
-          background-color: #30ad3a;
-        }
-      }
     }
 
     .bar {
@@ -46,6 +40,9 @@
       height: 6px;
       background-color: #524e4e;
       transition: 0.4s ease;
+      &.ok {
+        background-color: #30ad3a;
+      }
     }
   }
 
@@ -144,6 +141,11 @@
           width: 100%;
         }
       }
+    }
+
+    ::-webkit-scrollbar {
+      width: 0px;
+      background: rgba(255, 255, 255, 0.0);
     }
 
     .modal-border {

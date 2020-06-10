@@ -1,7 +1,6 @@
 import { Component, Renderer2, Input } from '@angular/core';
 import { PokemonApiService } from './service/pokemonApi.service';
-import { map, finalize } from 'rxjs/operators';
-import { ThrowStmt } from '@angular/compiler';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +10,13 @@ import { ThrowStmt } from '@angular/compiler';
 export class AppComponent {
   showModalPokemon: boolean = false;
 
-  listPokemons: any[] = [];
+  listAllPokemons: object[] = [];
+  listPokemons: object[] = [];
   selectedPokemon: any;
   pokemonsAbilities: object;
+
   @Input() findingWord: string;
+  findingList: object[] = [];
 
   constructor(
     public pokemonService: PokemonApiService,

@@ -2,10 +2,10 @@
   .inner
     .search
       input(
-        '[(ngModel)]'="findingWord", id="name", required, maxlength="20",
+        '[(ngModel)]'="findingWord", id="name", maxlength="20",
         autocomplete="off", placeholder="Pokemon"
       )
-      .bar
+      .bar([class]="findingWord ? 'ok' : ''")
     .pokemon-list
       include ./_includes/pokemon-item.pug
 
