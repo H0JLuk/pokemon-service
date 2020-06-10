@@ -1,7 +1,7 @@
 
 <div class="modal-border">
   <div class="pok_photo">
-    <div class="btn btn-close" (click)="toggleModal()"></div><img [src]="pokemonService.getPhotoUrl(selectedPokemon.id)"/>
+    <div class="btn btn-close" (click)="toggleModal()"></div><img [src]="pokemonService.getPhotoUrl(selectedPokemon.id)" onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"/>
   </div>
   <div class="pok-content_name">{{ selectedPokemon.name }}</div>
   <div class="pok-content_number">#{{ selectedPokemon.id+1 }}</div>

@@ -1,7 +1,10 @@
 .modal-border
   .pok_photo
     .btn.btn-close('(click)'="toggleModal()")
-    img([src]="pokemonService.getPhotoUrl(selectedPokemon.id)")
+    img(
+      [src]="pokemonService.getPhotoUrl(selectedPokemon.id)" 
+      onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"
+    )
   .pok-content_name {{ selectedPokemon.name }}
   .pok-content_number \#{{ selectedPokemon.id+1 }}
   ul.pok-content_list(*ngIf="selectedPokemon.abilities")

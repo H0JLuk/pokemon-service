@@ -34,7 +34,9 @@ export class AppComponent {
   selectedPokemon: IPokemon;
   pokemonsAbilities: object;
 
-  @Input() findingWord: string;
+  showBtnMore: boolean = true;
+
+  @Input() findingWord: string = '';
   findingList: object[] = [];
 
   constructor(
@@ -42,45 +44,100 @@ export class AppComponent {
     private renderer: Renderer2,
     @Self() private ngOnDestroy$: NgOnDestroy
   ) {
-    // localStorage.clear()
+    // localStorage.clear();
     this.getAllPokemonsList();
 
     this.pokemonsAbilities =
       JSON.parse(localStorage.getItem('pokemonsAbilities')) || {};
-
-    localStorage.getItem('pokemonsList')
-      ? (this.listPokemons = JSON.parse(
-          localStorage.getItem('pokemonsList')
-        ).filter((i, index) => index < 20))
-      : this.showMorePokemons();
   }
 
-  findPokemons(): void {
+  findPokemons(limit = 20): void {
     this.listPokemons = this.listAllPokemons.filter((pokemon) =>
       pokemon.name.match(new RegExp(this.findingWord, 'gi'))
-    ).slice(0, 20);
-    console.log(this.listPokemons);
-    
-    
+    );
+
+    this.showBtnMore =
+      this.listPokemons.length !== this.listPokemons.slice(0, limit).length;
+    this.listPokemons = this.listPokemons.slice(0, limit);
+
+    this.listPokemons = this.listPokemons.map((pokemon) => {
+      if (pokemon.abilities) {
+        return pokemon;
+      }
+      
+      this.pokemonService
+        .getDetailedPokemonData(pokemon.url)
+        .pipe(
+          finalize(() => this.saveDataInStorage()),
+          takeUntil(this.ngOnDestroy$)
+        )
+        .subscribe(
+          (data) => (pokemon.abilities = data.map((abil) => abil['ability']))
+        )
+        .add(() => console.log('ability request'));
+      return pokemon;
+    });
+  }
+
+  showMore(): void {
+    const LENGTH = this.listPokemons.length;
+    this.findPokemons(LENGTH + 20);
   }
 
   getAllPokemonsList(): void {
     if (localStorage.getItem('allPokemons')) {
       this.listAllPokemons = JSON.parse(localStorage.getItem('allPokemons'));
+      this.findPokemons();
     } else {
+      console.log('Pokemon list request');
+
+      let id: number = 1;
       this.pokemonService
         .getListPokemonsData(0, 1000)
-        .pipe(takeUntil(this.ngOnDestroy$))
-        .subscribe((data) => (this.listAllPokemons = data))
-        .add(() => localStorage.setItem('allPokemons', JSON.stringify(this.listAllPokemons)));
+        .pipe(
+          finalize(() => this.findPokemons()),
+          takeUntil(this.ngOnDestroy$)
+        )
+        .subscribe(
+          (data) =>
+            (this.listAllPokemons = data.map((pokemon) => {
+              pokemon.id = id++;
+              return pokemon;
+            }))
+        )
+        .add(() =>
+          localStorage.setItem(
+            'allPokemons',
+            JSON.stringify(this.listAllPokemons)
+          )
+        );
     }
+  }
+
+  private saveDataInStorage(): void {
+    let changed: boolean = false,
+        localPokemonsList = JSON.parse(localStorage.getItem('allPokemons'));
+
+    this.listPokemons.forEach((pokemon) => {
+      if (localPokemonsList[pokemon.id - 1].abilities) {
+        return;
+      }
+
+      changed = true;
+      localPokemonsList[pokemon.id - 1].abilities = pokemon.abilities;
+    });
+
+    changed
+      ? localStorage.setItem('allPokemons', JSON.stringify(localPokemonsList))
+      : null;
   }
 
   toggleModal(id: number = null): void {
     if (!this.showModalPokemon) {
       this.renderer.setStyle(document.body, 'overflow', 'hidden');
-      this.selectedPokemon = this.listPokemons[id];
-      this.selectedPokemon.id = id;
+      this.selectedPokemon = this.listPokemons.find(
+        (pokemon) => pokemon.id === id
+      );
       this.setAbilities();
     } else {
       this.renderer.setStyle(document.body, 'overflow', 'auto');
@@ -89,56 +146,13 @@ export class AppComponent {
     this.showModalPokemon = !this.showModalPokemon;
   }
 
-  showMorePokemons(): void {
-    const LENGTH = this.listPokemons.length;
-    const localPokemonsList =
-      JSON.parse(localStorage.getItem('pokemonsList')) || [];
-
-    localPokemonsList.length > LENGTH + 20
-      ? (this.listPokemons = localPokemonsList.slice(0, LENGTH + 20))
-      : this.setPokemonsData(LENGTH);
-  }
-
-  private setPokemonsData(length: number): void {
-    console.log('request');
-
-    this.pokemonService
-      .getListPokemonsData(length)
-      .pipe(takeUntil(this.ngOnDestroy$))
-      .subscribe((data) => {
-        data.forEach((item) => this.listPokemons.push(item));
-
-        this.listPokemons = this.listPokemons.map((item, index) => {
-          if (index < length) {
-            return item;
-          }
-          this.pokemonService
-            .getDetailedPokemonData(index + 1)
-            .pipe(
-              finalize(() =>
-                localStorage.setItem(
-                  'pokemonsList',
-                  JSON.stringify(this.listPokemons)
-                )
-              ),
-              takeUntil(this.ngOnDestroy$)
-            )
-            .subscribe(
-              (elem) =>
-                (item['abilities'] = elem.map((abil) => abil['ability']))
-            );
-          return item;
-        });
-      });
-  }
-
   private setAbilities(): void {
-    this.selectedPokemon.abilities.forEach((item) => {
-      if (this.pokemonsAbilities[item.url]) {
+    this.selectedPokemon.abilities.forEach((ability) => {
+      if (this.pokemonsAbilities[ability.url]) {
         return;
       }
       this.pokemonService
-        .getAbilitiesDescr(item.url)
+        .getAbilitiesDescr(ability.url)
         .pipe(
           finalize(() =>
             localStorage.setItem(
@@ -150,11 +164,11 @@ export class AppComponent {
         )
         .subscribe(
           (data) =>
-            (this.pokemonsAbilities[item.url] = data
+            (this.pokemonsAbilities[ability.url] = data
               .filter((elem) => elem['language']['name'] === 'en')
               .map((elem) => elem['effect'])[0])
         )
-        .add(() => console.log('ability request'));
+        .add(() => console.log('ability description request'));
     });
   }
 }

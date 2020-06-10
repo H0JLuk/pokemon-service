@@ -17,8 +17,8 @@ export class PokemonApiService {
       );
   }
 
-  getDetailedPokemonData(id: number): Observable<object[]> {
-    return this.http.get(`${environment.detailedApi}${id}`)
+  getDetailedPokemonData(url: string): Observable<object[]> {
+    return this.http.get(url)
       .pipe(
         take(1),
         map(item => item['abilities'])

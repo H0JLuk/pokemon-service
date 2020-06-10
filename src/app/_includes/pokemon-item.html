@@ -1,11 +1,11 @@
 
-<div class="pokemon-item" *ngFor="let pokemon of listPokemons; let index = index" (click)="toggleModal(index)">
-  <div class="pok_photo"><img [src]="pokemonService.getPhotoUrl(index)" alt="Pokemon photo"/></div>
+<div class="pokemon-item" *ngFor="let pokemon of listPokemons" (click)="toggleModal(pokemon.id)">
+  <div class="pok_photo"><img [src]="pokemonService.getPhotoUrl(pokemon.id)" alt="Pokemon photo" onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"/></div>
   <div class="pok_content">
-    <div class="pok-content_name">{{ pokemon['name'] }}</div>
-    <div class="pok-content_number">#{{ index+1 }}</div>
-    <ul class="pok-content_list" *ngIf="pokemon['abilities']">
-      <li class="ability" *ngFor="let ability of pokemon['abilities']">{{ ability.name }}</li>
+    <div class="pok-content_name">{{ pokemon.name }}</div>
+    <div class="pok-content_number">#{{ pokemon.id }}</div>
+    <ul class="pok-content_list" *ngIf="pokemon.abilities">
+      <li class="ability" *ngFor="let ability of pokemon.abilities">{{ ability.name }}</li>
     </ul>
   </div>
 </div>

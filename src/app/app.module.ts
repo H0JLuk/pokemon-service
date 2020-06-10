@@ -8,7 +8,7 @@ import { PokemonApiService } from './service/pokemonApi.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
