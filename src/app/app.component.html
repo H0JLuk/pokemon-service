@@ -2,9 +2,10 @@
 <div class="wrapper">
   <div class="inner">
     <div class="search">
-      <input [(ngModel)]="findingWord" (input)="findPokemons()" id="name" maxlength="20" autocomplete="off" placeholder="pokemon search..."/>
+      <input [(ngModel)]="findingWord" (input)="findPokemons()" id="name" maxlength="20" autocomplete="off" placeholder="Pokemon query..."/>
       <div class="bar" [class]="findingWord ? 'ok' : ''"></div>
     </div>
+    <div class="no-result no-result" *ngIf="listPokemons.length === 0">No result</div>
     <div class="pokemon-list">
       <div class="pokemon-item" *ngFor="let pokemon of listPokemons" (click)="toggleModal(pokemon.id)">
         <div class="pok_photo"><img [src]="pokemonService.getPhotoUrl(pokemon.id)" alt="Pokemon photo" onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"/></div>
@@ -38,5 +39,5 @@
       </div>
     </div>
   </div>
-  <div class="btn btn-show" *ngIf="showBtnMore" (click)="showMore()">Show more...</div>
+  <div class="btn btn-show" *ngIf="showBtnMore" (click)="showMorePokemons()">Show more...</div>
 </div>

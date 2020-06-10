@@ -3,9 +3,10 @@
     .search
       input(
         '[(ngModel)]'="findingWord", '(input)'="findPokemons()", id="name", maxlength="20",
-        autocomplete="off", placeholder="pokemon search..."
+        autocomplete="off", placeholder="Pokemon query..."
       )
       .bar([class]="findingWord ? 'ok' : ''")
+    .no-result(*ngIf="listPokemons.length === 0").no-result No result
     .pokemon-list
       include ./_includes/pokemon-item.pug
 
@@ -13,4 +14,4 @@
     .blur('(click)'="toggleModal()")
     .modal_inner
       include ./_includes/pokemon-modal.pug
-  .btn.btn-show(*ngIf="showBtnMore" '(click)'="showMore()") Show more...
+  .btn.btn-show(*ngIf="showBtnMore" '(click)'="showMorePokemons()") Show more...

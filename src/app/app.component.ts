@@ -45,46 +45,13 @@ export class AppComponent {
     @Self() private ngOnDestroy$: NgOnDestroy
   ) {
     // localStorage.clear();
-    this.getAllPokemonsList();
+    this.setFullPokemonsList();
 
     this.pokemonsAbilities =
       JSON.parse(localStorage.getItem('pokemonsAbilities')) || {};
   }
 
-  findPokemons(limit = 20): void {
-    this.listPokemons = this.listAllPokemons.filter((pokemon) =>
-      pokemon.name.match(new RegExp(this.findingWord, 'gi'))
-    );
-
-    this.showBtnMore =
-      this.listPokemons.length !== this.listPokemons.slice(0, limit).length;
-    this.listPokemons = this.listPokemons.slice(0, limit);
-
-    this.listPokemons = this.listPokemons.map((pokemon) => {
-      if (pokemon.abilities) {
-        return pokemon;
-      }
-      
-      this.pokemonService
-        .getDetailedPokemonData(pokemon.url)
-        .pipe(
-          finalize(() => this.saveDataInStorage()),
-          takeUntil(this.ngOnDestroy$)
-        )
-        .subscribe(
-          (data) => (pokemon.abilities = data.map((abil) => abil['ability']))
-        )
-        .add(() => console.log('ability request'));
-      return pokemon;
-    });
-  }
-
-  showMore(): void {
-    const LENGTH = this.listPokemons.length;
-    this.findPokemons(LENGTH + 20);
-  }
-
-  getAllPokemonsList(): void {
+  private setFullPokemonsList(): void {
     if (localStorage.getItem('allPokemons')) {
       this.listAllPokemons = JSON.parse(localStorage.getItem('allPokemons'));
       this.findPokemons();
@@ -112,6 +79,39 @@ export class AppComponent {
           )
         );
     }
+  }
+
+  findPokemons(limit = 20): void {
+    this.listPokemons = this.listAllPokemons.filter((pokemon) =>
+      pokemon.name.match(new RegExp(this.findingWord, 'i'))
+    );
+
+    this.showBtnMore =
+      this.listPokemons.length !== this.listPokemons.slice(0, limit).length;
+    this.listPokemons = this.listPokemons.slice(0, limit);
+
+    this.listPokemons = this.listPokemons.map((pokemon) => {
+      if (pokemon.abilities) {
+        return pokemon;
+      }
+
+      this.pokemonService
+        .getDetailedPokemonData(pokemon.url)
+        .pipe(
+          finalize(() => this.saveDataInStorage()),
+          takeUntil(this.ngOnDestroy$)
+        )
+        .subscribe(
+          (data) => (pokemon.abilities = data.map((abil) => abil['ability']))
+        )
+        .add(() => console.log('ability request'));
+      return pokemon;
+    });
+  }
+
+  showMorePokemons(): void {
+    const LENGTH_POKEMONS = this.listPokemons.length;
+    this.findPokemons(LENGTH_POKEMONS + 20);
   }
 
   private saveDataInStorage(): void {

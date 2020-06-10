@@ -34,6 +34,6 @@ export class PokemonApiService {
   }
 
   getPhotoUrl(id: number): string {
-    return `${environment.pokemonPictApi}${id + 1}.png`;
+    return `${environment.pokemonPictApi}${id}.png`;
   }
 }
