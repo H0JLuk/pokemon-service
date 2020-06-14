@@ -40,7 +40,7 @@ export class AppComponent {
   }
 
   onScroll() {
-    alert('scrolled')
+    console.log('scrolled');
   }
 
   ngAfterViewInit() {

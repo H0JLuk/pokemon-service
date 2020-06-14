@@ -1,6 +1,6 @@
 
 <div class="wrapper">
-  <div class="inner" infinite-scroll="showMorePokemons()">
+  <div class="inner" infiniteScroll="" [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
     <div class="search">
       <input [(ngModel)]="findingWord" (input)="findPokemons()" id="name" maxlength="20" autocomplete="off" placeholder="Pokemon query..." #nameInp=""/>
       <div class="cancel" [ngClass]="{'active': findingWord}" (click)="findingWord = ''; findPokemons()">

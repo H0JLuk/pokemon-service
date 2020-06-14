@@ -1,5 +1,5 @@
 .wrapper
-  .inner(infinite-scroll="showMorePokemons()")
+  .inner(infiniteScroll='', [infiniteScrollDistance]="2", [infiniteScrollThrottle]="50", '(scrolled)'="onScroll()")
     .search
       input(
         '[(ngModel)]'="findingWord", '(input)'="findPokemons()", id="name", maxlength="20",
