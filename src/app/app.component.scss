@@ -4,19 +4,13 @@
 .wrapper {
   @include flex-center;
   flex-direction: column;
-  margin-bottom: 20px;
-
-  .not-scroll {
-    :host >>> body {
-      overflow: hidden;
-    }
-  }
 }
 
 .inner {
+  padding: 20px 16px;
   min-height: 100vh;
-  width: 93%;
-  min-width: calc(100% - 32px); // как-раз под 320px
+  max-height: 100vh;
+  overflow-y: auto;
   display: flex;
   align-items: center;  
   flex-direction: column;
@@ -34,6 +28,21 @@
       background: transparent;
       font-size: 18px;
       padding: 10px;
+    }
+
+    .cancel {
+      position: absolute;
+      top: 15px;
+      right: 7px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: ease-in-out .3s;
+
+      &.active {
+        opacity: 1;
+        pointer-events: visible;
+      }
     }
 
     .bar {
@@ -72,12 +81,17 @@
       }
 
       .pok_photo {
-        // width: 100%;
+        height: 394px;
+        width: 100%;
         background-color: $pokemon-bg;
 
         img {
           width: 100%;
           height: auto;
+
+          &.ng-failed-lazyloaded {
+            background: url('https://pbs.twimg.com/profile_images/1212398377553412096/HaWAuh90_400x400.jpg');
+          }
         }
       }
 
@@ -125,7 +139,6 @@
     top: 50%;
     right: 50%;
     transform: translate(50%, -50%);
-    min-height: 500px;
     background-color: #fff;
     display: flex;
     justify-content: center;
@@ -156,7 +169,11 @@
       flex-direction: column;
       align-items: center;
       overflow-y: auto;
-      max-height: 100vh;
+      max-height: 700px;
+
+      @media (max-height: 700px) {
+        max-height: 100vh;
+      }
 
       .pok_photo {
         margin: 0 0 25px 0;
@@ -197,6 +214,10 @@
           background-color: pink;
           border-radius: 30px 30px 0 0;
 
+          &.ng-lazyloaded {
+            animation: none;
+          }
+
           @media (max-width: 550px) {
             width: 100%;
             border-radius: 0;
@@ -227,10 +248,13 @@
 
           &.ability {
             font-weight: 600;
+            
+            .loading {
+              min-height: 30px;
+            }
 
             & > * {
               font-weight: normal;
-              list-style-type: none;
             }
           }
         }

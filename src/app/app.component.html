@@ -1,14 +1,17 @@
 
 <div class="wrapper">
-  <div class="inner">
+  <div class="inner" infinite-scroll="showMorePokemons()">
     <div class="search">
-      <input [(ngModel)]="findingWord" (input)="findPokemons()" id="name" maxlength="20" autocomplete="off" placeholder="Pokemon query..."/>
+      <input [(ngModel)]="findingWord" (input)="findPokemons()" id="name" maxlength="20" autocomplete="off" placeholder="Pokemon query..." #nameInp=""/>
+      <div class="cancel" [ngClass]="{'active': findingWord}" (click)="findingWord = ''; findPokemons()">
+        <div class="icon-squared-cross"></div>
+      </div>
       <div class="bar" [class]="findingWord ? 'ok' : ''"></div>
     </div>
-    <div class="no-result no-result" *ngIf="listPokemons.length === 0">No result</div>
+    <div class="no-result" *ngIf="showNoResult">No result</div>
     <div class="pokemon-list">
-      <div class="pokemon-item" *ngFor="let pokemon of listPokemons" (click)="toggleModal(pokemon.id)">
-        <div class="pok_photo"><img [src]="pokemonService.getPhotoUrl(pokemon.id)" alt="Pokemon photo" onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"/></div>
+      <div class="pokemon-item" *ngFor="let pokemon of pokemonService.listPokemons$ | async" (click)="toggleModal(pokemon)">
+        <div class="pok_photo"><img [defaultImage]="'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=='" [lazyLoad]="pokemon.src" alt="Pokemon photo"/></div>
         <div class="pok_content">
           <div class="pok-content_name">{{ pokemon.name }}</div>
           <div class="pok-content_number">#{{ pokemon.id }}</div>
@@ -18,26 +21,25 @@
         </div>
       </div>
     </div>
+    <div class="btn btn-show" *ngIf="pokemonService.showMoreBtn$ | async" (click)="showMorePokemons()">Show more...</div>
   </div>
   <div class="pok_modal" *ngIf="showModalPokemon">
     <div class="blur" (click)="toggleModal()"></div>
     <div class="modal_inner">
       <div class="modal-border">
         <div class="pok_photo">
-          <div class="btn btn-close" (click)="toggleModal()"></div><img [src]="pokemonService.getPhotoUrl(selectedPokemon.id)" onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"/>
+          <div class="btn btn-close" (click)="toggleModal()"></div><img [defaultImage]="'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=='" [lazyLoad]="selectedPokemon.src" alt="Pokemon photo"/>
         </div>
         <div class="pok-content_name">{{ selectedPokemon.name }}</div>
         <div class="pok-content_number">#{{ selectedPokemon.id+1 }}</div>
         <ul class="pok-content_list" *ngIf="selectedPokemon.abilities">
           <li class="ability" *ngFor="let ability of selectedPokemon.abilities">
              {{ ability.name }}
-            <ul class="ability-descr" *ngIf="pokemonsAbilities">
-              <li>{{ pokemonsAbilities[ability.url] }}</li>
-            </ul>
+            <div class="loading" *ngIf="!pokemonsAbilities[ability.url]">searching...</div>
+            <div>{{ pokemonsAbilities[ability.url] }}</div>
           </li>
         </ul>
       </div>
     </div>
   </div>
-  <div class="btn btn-show" *ngIf="showBtnMore" (click)="showMorePokemons()">Show more...</div>
 </div>

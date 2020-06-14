@@ -1,8 +1,8 @@
-.pokemon-item(*ngFor="let pokemon of listPokemons", '(click)'="toggleModal(pokemon.id)")
+.pokemon-item(*ngFor="let pokemon of pokemonService.listPokemons$ | async", '(click)'="toggleModal(pokemon)")
   .pok_photo
     img(
-      [src]="pokemonService.getPhotoUrl(pokemon.id)", alt="Pokemon photo"
-      onError="this.src='https://i.ytimg.com/vi/Y-Gq-hVZWM0/maxresdefault.jpg'"
+      [defaultImage]="'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=='",
+      [lazyLoad]="pokemon.src", alt="Pokemon photo"
     )
   .pok_content
     .pok-content_name {{ pokemon.name }}

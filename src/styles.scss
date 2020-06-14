@@ -1,4 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+// @import "../node_modules/ngx-toastr/toastr.css";
+@import "src/assets/fonts/style.scss";
 @import "src/variables.scss";
 
 * {
@@ -11,10 +12,19 @@ body {
   font-family: sans-serif;
   color: $text-color;
   background-color: $main-bg;
+  overflow: hidden;
 }
 
 input, .btn {
   cursor: pointer;
   border: none;
   outline: none;
+}
+
+img.ng-lazyloaded { 
+  animation: fadein .8s;
+}
+@keyframes fadein {
+  from { filter: blur(15px); }
+  to { filter: blur(0px); } 
 }

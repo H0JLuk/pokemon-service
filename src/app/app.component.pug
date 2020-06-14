@@ -1,17 +1,19 @@
 .wrapper
-  .inner
+  .inner(infinite-scroll="showMorePokemons()")
     .search
       input(
         '[(ngModel)]'="findingWord", '(input)'="findPokemons()", id="name", maxlength="20",
-        autocomplete="off", placeholder="Pokemon query..."
+        autocomplete="off", placeholder="Pokemon query..." '#nameInp'=''
       )
+      .cancel('[ngClass]'="{'active': findingWord}", '(click)'="findingWord = ''; findPokemons()")
+        .icon-squared-cross
       .bar([class]="findingWord ? 'ok' : ''")
-    .no-result(*ngIf="listPokemons.length === 0").no-result No result
+    .no-result(*ngIf="showNoResult") No result
     .pokemon-list
       include ./_includes/pokemon-item.pug
+    .btn.btn-show(*ngIf="pokemonService.showMoreBtn$ | async" '(click)'="showMorePokemons()") Show more...
 
   .pok_modal(*ngIf='showModalPokemon')
     .blur('(click)'="toggleModal()")
     .modal_inner
       include ./_includes/pokemon-modal.pug
-  .btn.btn-show(*ngIf="showBtnMore" '(click)'="showMorePokemons()") Show more...
